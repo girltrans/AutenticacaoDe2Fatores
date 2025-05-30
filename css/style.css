@@ -1,0 +1,183 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: 'Inconsolata', sans-serif !important;
+}
+
+html,
+body {
+    background-color: #000;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+@media (scripting: enabled) {
+    .preload * {
+        -webkit-transition: none !important;
+        -moz-transition: none !important;
+        -ms-transition: none !important;
+        -o-transition: none !important;
+        transition: none !important;
+    }
+}
+
+@supports (-webkit-touch-callout: none) {
+    .preload * {
+        -webkit-transition: none !important;
+        -moz-transition: none !important;
+        -ms-transition: none !important;
+        -o-transition: none !important;
+        transition: none !important;
+    }
+}
+
+.otpOuter {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, .5);
+    padding: 12px;
+    border-radius: .8rem;
+    text-align: center;
+    font-size: 18px;
+    font-family: 'Inconsolata';
+    font-weight: 500;
+    width: 135%;
+    color: white;
+    -webkit-transition: all 200ms linear;
+    -ms-transition: all 200ms linear;
+    transition: all 200ms linear;
+    -webkit-font-smoothing: antialiased;
+}
+
+input:focus {
+    outline: none !important;
+    border-color: rgba(255, 255, 255, .75);
+    box-shadow: none;
+}
+
+layflags-rolling-number {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 96px;
+    font-weight: 500;
+    display: block;
+    padding: 7px;
+    border-radius: 6px;
+    color: white;
+    opacity: .15;
+    margin-top: .5rem;
+    cursor: pointer;
+    line-height: 1.25em;
+    --roll-duration: 1.5s;
+    transition-duration: 1.5s;
+}
+
+p {
+    font-size: 18px;
+    color: rgba(255, 255, 255, .5);
+    font-weight: 500;
+}
+
+h1 {
+    font-weight: 400;
+    margin-bottom: 1.1rem;
+}
+
+a.github {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    right: 0;
+    top: 0;
+    margin: 2rem;
+}
+
+.github img {
+    width: 100%;
+    height: 100%;
+    filter: invert(1);
+    opacity: .2;
+}
+
+form {
+    display: contents;
+}
+
+.tippy-box canvas {
+    filter: drop-shadow(0 0 4px #000);
+}
+
+.tippy-box[data-theme~=translucent] {
+    background-color: #262626;
+    border-radius: 2.65rem;
+    padding: .8rem
+}
+
+.tippy-box[data-theme~=translucent]>.tippy-arrow {
+    width: 14px;
+    height: 14px
+}
+
+.tippy-box[data-theme~=translucent][data-placement^=top]>.tippy-arrow:before {
+    border-width: 7px 7px 0;
+    border-top-color: #262626
+}
+
+.tippy-box[data-theme~=translucent][data-placement^=bottom]>.tippy-arrow:before {
+    border-width: 0 7px 7px;
+    border-bottom-color: #262626
+}
+
+.tippy-box[data-theme~=translucent][data-placement^=left]>.tippy-arrow:before {
+    border-width: 7px 0 7px 7px;
+    border-left-color: #262626
+}
+
+.tippy-box[data-theme~=translucent][data-placement^=right]>.tippy-arrow:before {
+    border-width: 7px 7px 7px 0;
+    border-right-color: #262626
+}
+
+.tippy-box[data-theme~=translucent]>.tippy-backdrop {
+    background-color: #262626
+}
+
+.tippy-box[data-theme~=translucent]>.tippy-svg-arrow {
+    fill: #262626
+}
+
+@media screen and (max-width: 600px) {
+    input {
+        width: 100%;
+    }
+}
+
+@-moz-document url-prefix() {
+    input {
+        padding: 13px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    layflags-rolling-number {
+        padding: 5px;
+        margin: initial;
+    }
+
+    ::placeholder {
+        font-weight: 300;
+    }
+}

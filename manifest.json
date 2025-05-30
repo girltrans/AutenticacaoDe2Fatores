@@ -1,0 +1,13 @@
+{
+    "short_name": "Autenticação de 2 Fatores",
+    "name": "Autenticação de 2 Fatores",
+    "icons": [
+        {
+            "src": "favicon.ico",
+            "sizes": "27x32",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "/",
+    "display": "standalone"
+}
