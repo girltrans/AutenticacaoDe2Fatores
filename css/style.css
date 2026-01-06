@@ -105,6 +105,10 @@ a.github {
     margin: 2rem;
 }
 
+a.github:hover img {
+    opacity: 1;
+}
+
 .github img {
     width: 100%;
     height: 100%;
