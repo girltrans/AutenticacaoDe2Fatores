@@ -6,6 +6,9 @@
     padding: 0;
     border: 0;
     font-family: 'Inconsolata', sans-serif !important;
+    -webkit-transition: all 200ms linear;
+    -ms-transition: all 200ms linear;
+    transition: all 200ms linear;
 }
 
 html,
@@ -39,16 +42,17 @@ body {
     }
 }
 
-.otpOuter {
+.container {
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 1rem;
 }
 
 input {
-    background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, .5);
+    background-color: #121212;
+    border: 1px solid #808080;
     padding: 12px;
     border-radius: .8rem;
     text-align: center;
@@ -65,7 +69,7 @@ input {
 
 input:focus {
     outline: none !important;
-    border-color: rgba(255, 255, 255, .75);
+    border-color: #C0C0C0;
     box-shadow: none;
 }
 
@@ -79,15 +83,14 @@ layflags-rolling-number {
     color: white;
     opacity: .15;
     margin-top: .5rem;
-    cursor: pointer;
     line-height: 1.25em;
-    --roll-duration: 1.5s;
-    transition-duration: 1.5s;
+    --roll-duration: .8s;
+    transition-duration: .8s;
 }
 
 p {
     font-size: 18px;
-    color: rgba(255, 255, 255, .5);
+    color: #808080;
     font-weight: 500;
 }
 
@@ -105,11 +108,15 @@ a.github {
     margin: 2rem;
 }
 
+a.github:hover img {
+    opacity: 1;
+}
+
 .github img {
     width: 100%;
     height: 100%;
     filter: invert(1);
-    opacity: .2;
+    opacity: .15;
 }
 
 form {
