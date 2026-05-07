@@ -10,8 +10,8 @@
     <title>Autenticação De 2 Fatores</title>
     <meta name="title" content="Autenticação De 2 Fatores" />
     <meta name="description" content="Código Aberto Autenticação de 2 Fatores (Senha única baseada no tempo) Visualizador. Suporta todas as plataformas 2FA (Microsoft, Discord, Minecraft, Twitter, etc.)" />
-	<meta content="https://autenticacaode2fatores.vercel.app" property="og:url"/>
-	<meta content="https://autenticacaode2fatores.vercel.app/images/autenticacaode2fatores.png" property="og:image"/>
+    <meta content="https://autenticacaode2fatores.vercel.app" property="og:url"/>
+    <meta content="https://autenticacaode2fatores.vercel.app/images/autenticacaode2fatores.png" property="og:image"/>
     <meta name="theme-color" content="#000000" />
 
     <meta property="og:type" content="website">
@@ -41,6 +41,42 @@
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.umd.min.js"
         crossorigin="anonymous"></script>
+    <style>
+        .otp-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px; 
+            width: 100%;
+            margin-top: -10px;
+        }
+        .side-otp {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.3s ease;
+        }
+        .side-label {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 5px;
+			margin-top: 25px;
+			transform: translateY(15px);
+        }
+        layflags-rolling-number.side-value {
+            font-size: 40px !important;
+            letter-spacing: 2px;
+            cursor: text !important; /* Muda o mouse para ícone de texto */
+        }
+        input#secret {
+            width: 100% !important;
+            max-width: 450px;
+        }
+        layflags-rolling-number, 
+        .side-otp {
+            opacity: 0.5; 
+        }
+    </style>
 </head>
 
 <body class="preload">
@@ -48,12 +84,27 @@
         class="github"><img src="./icons/github.png" alt="GitHub Icon" title="GitHub"></a>
     <div class="otpOuter">
         <h1>Autenticação De 2 Fatores</h1>
-        <form>
+        <form onsubmit="return false;">
             <input type="password" maxlength="40" autocomplete="off" id="secret" placeholder="cole aqui a sua chave secreta">
         </form>
-        <layflags-rolling-number data-minimum="6" id="otp">000000</layflags-rolling-number>
+
+        <div class="otp-container">
+            <div class="side-otp" id="otp-prev-container">
+                <span class="side-label">Anterior</span>
+                <layflags-rolling-number class="side-value" data-minimum="6" id="otp-prev">000000</layflags-rolling-number>
+            </div>
+
+            <layflags-rolling-number data-minimum="6" id="otp" title="Copiar">000000</layflags-rolling-number>
+
+            <div class="side-otp" id="otp-next-container">
+                <span class="side-label">Próximo</span>
+                <layflags-rolling-number class="side-value" data-minimum="6" id="otp-next">000000</layflags-rolling-number>
+            </div>
+        </div>
+
         <p>clique para copiar / expira em: <b id="updatingIn">30</b></p>
     </div>
+
     <script type="module">
         window.hasRolledInt = false;
 
@@ -81,14 +132,14 @@
         }
 
         function toDigits(num, size = 0) {
-            const result = num.split("");
+            const result = String(num).split("");
             const padSize = Math.max(0, size - result.length);
             return [...Array(padSize).fill("0"), ...result];
         }
 
         function toSize(num) {
             if (typeof window.minimumIntLen == 'number') return window.minimumIntLen;
-            return num.length;
+            return String(num).length;
         }
         function renderStyles() {
             return html`
@@ -110,13 +161,13 @@
                 user-select: none;
                 position: absolute;
                 left: 0;
-                display: inline-flex
+                display: inline-flex;
                 align-items: center;
                 justify-content: center;
                 flex-direction: column;
                 transition: transform var(--roll-duration);
                 }
-                .scale span:last-child { /* the minus (-) */
+                .scale span:last-child {
                 position: absolute;
                 bottom: -10%;
                 left: 0;
@@ -149,26 +200,10 @@
             return html`
             <span class="digit" data-value="${value}" id="digit${index}">
                 <span class="scale" aria-hidden="true">
-                <span>0</span>
-                <span>1</span>
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>5</span>
-                <span>6</span>
-                <span>7</span>
-                <span>8</span>
-                <span>9</span>
-                <span>0</span>
-                <span>1</span>
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>5</span>
-                <span>6</span>
-                <span>7</span>
-                <span>8</span>
-                <span>9</span>
+                <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
+                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
+                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
                 </span>
                 <span class="value">${value[0]}</span>
             </span>
@@ -183,32 +218,23 @@
         }
 
         function render($wrapper, nextState, prevState) {
-            const {
-                value,
-                size
-            } = nextState;
+            const { value, size } = nextState;
             if (size > prevState.size) {
                 $wrapper.innerHTML = toDigits("", size).map(renderDigit).join("");
                 setTimeout(() => {
-                    render($wrapper, nextState, {
-                        ...prevState,
-                        size
-                    });
+                    render($wrapper, nextState, { ...prevState, size });
                 }, 23);
             } else {
                 toDigits(value, size).forEach((digit, index, arr) => {
                     const $digit = $wrapper.querySelector(`#digit${index}`);
+                    if (!$digit) return;
                     if (index == 0) window.$prevAll = [...$wrapper.children].map(a=>a.getAttribute('data-value')[0]).join('');
-                    window["prevInt" + index] = $digit.getAttribute('data-value');
+                    const prevValue = $digit.getAttribute('data-value');
 
-                    if ($digit && $prevAll != arr.join('')) {
-                        if (parseInt(window["prevInt" + index]) == parseInt(digit) && window.hasRolledInt) {
+                    if ($prevAll != arr.join('')) {
+                        if (parseInt(prevValue) == parseInt(digit) && window.hasRolledInt) {
                             $digit.querySelector(".value").textContent = digit;
-                            if (window["prevInt" + index].length == 2) {
-                                $digit.dataset.value = digit;
-                            } else {
-                                $digit.dataset.value = String(digit).repeat(2);
-                            }
+                            $digit.dataset.value = (prevValue.length == 2) ? digit : String(digit).repeat(2);
                         } else {
                             $digit.dataset.value = digit;
                             $digit.querySelector(".value").textContent = digit;
@@ -220,55 +246,34 @@
         const INTERNAL = Symbol("INTERNAL");
 
         class RollingNumber extends HTMLElement {
-            static get observedAttributes() {
-                    return ["value"];
-                }
-                [INTERNAL] = {
-                    $wrapper: null,
-                    state: {
-                        value: "",
-                        size: 0
-                    },
-                    update(payload) {
-                        if ("value" in payload) {
-                            const {
-                                value
-                            } = payload;
-                            const size = toSize(value);
-                            const state = {
-                                ...this.state,
-                                value
-                            };
-                            const nextState = size > this.state.size ? {
-                                ...state,
-                                size
-                            } : state;
-                            render(this.$wrapper, nextState, this.state);
-                            this.state = nextState;
-                        }
-                    },
-                };
+            static get observedAttributes() { return ["value"]; }
+            [INTERNAL] = {
+                $wrapper: null,
+                state: { value: "", size: 0 },
+                update(payload) {
+                    if ("value" in payload) {
+                        const { value } = payload;
+                        const size = toSize(value);
+                        const state = { ...this.state, value: String(value) };
+                        const nextState = size > this.state.size ? { ...state, size } : state;
+                        render(this.$wrapper, nextState, this.state);
+                        this.state = nextState;
+                    }
+                },
+            };
             constructor() {
                 super();
-                const shadow = this.attachShadow({
-                    mode: "open"
-                });
+                const shadow = this.attachShadow({ mode: "open" });
                 shadow.innerHTML = renderRoot();
                 this[INTERNAL].$wrapper = shadow.getElementById("wrapper");
             }
-            get value() {
-                return this[INTERNAL].state.value;
-            }
+            get value() { return this[INTERNAL].state.value; }
             set value(value) {
                 window.hasRolledInt = true;
-                this[INTERNAL].update({
-                    value: value
-                });
+                this[INTERNAL].update({ value: value });
             }
             attributeChangedCallback(name, _, newValue) {
-                if (name === "value") {
-                    this.value = newValue;
-                }
+                if (name === "value") { this.value = newValue; }
             }
             connectedCallback() {
                 if (this.isConnected) {
@@ -276,22 +281,39 @@
                     try {
                         if (typeof this.getAttribute('data-minimum') == 'string') window.minimumIntLen = parseInt(this.getAttribute('data-minimum'));
                     } catch {}
-                    const value = input;
-                    this[INTERNAL].update({
-                        value
-                    });
+                    this[INTERNAL].update({ value: input });
                 }
             }
         }
 
         customElements.define("layflags-rolling-number", RollingNumber);
-
-        export {
-            RollingNumber
-        };
     </script>
 
     <script src="./js/totp.js" defer></script>
     <script>window.addEventListener("load",()=>document.body.classList.remove("preload"))</script>
+<script>
+  (function() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .otp-container {
+        pointer-events: none !important;
+      }
+      #otp, 
+      layflags-rolling-number {
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        display: block !important;
+        width: max-content !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 0 !important;
+      }
+      .side-otp {
+        pointer-events: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  })();
+</script>
 </body>
 </html>
